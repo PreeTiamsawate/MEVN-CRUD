@@ -58,20 +58,22 @@ export default {
             formData.append('file', this.file, this.file.name);
             
 
-            try{
-                await axios.post(apiUpload, formData);
-                this.file = "";
+            
+            await axios.post(apiUpload, formData).then(() =>{ this.file = "";
                 console.log(this.$refs.file.files[0].name)
                 this.student.img = this.$refs.file.files[0].name;
-                // this.$router.push('/view');
                 
-            } catch(err){
-                console.log(err);
-            }
+                })
+                .then(()=>{
+                this.$router.push('/view');
+                })
+                .catch(error => {
+                console.log(error)
+            });
 
 
             let apiURL = 'http://localhost:4000/api/create-student';
-            await axios.post(apiURL, this.student).then(() =>{
+            axios.post(apiURL, this.student).then(() =>{
                 console.log(this.student);
                 
                 this.student = {
@@ -80,12 +82,14 @@ export default {
                     phone: '',
                     img: ''
                 };
-                // this.$router.push('/view');
+                
             }).then(()=>{
             this.$router.push('/view');
             }).catch(error => {
                 console.log(error)
             });
+
+            
         }
     }
 }
